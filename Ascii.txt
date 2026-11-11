@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+char input[100];
+char ch;
+
+printf("Enter a character: ");
+fgets(input, sizeof(input), stdin);
+
+if (strlen(input) != 2  input[1] != '\n')
+   {printf("Error: Please enter only one character.");}
+else{
+    ch = input[0];
+    
+  if (ch >= 0 && ch <= 127){
+    printf("Character: %c\n", ch);
+    printf("ASCII Value: %d\n", ch);
+
+    if (ch >= '0' && ch <= '9')
+                printf("It is a Digit");
+    else if ((ch >= 'A' && ch <= 'Z')  (ch >= 'a' && ch <= 'z'))
+        printf("It is an Alphabet");
+    else
+        printf("It is a Special Character");
+        }
+    else
+        { printf("Error: Invalid ASCII character.");}
+    }
+
+    return 0;
+    }

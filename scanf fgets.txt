@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str1[100], str2[100];
+    int ch;
+    scanf("%s", str1);
+
+    while ((ch = getchar()) != '\n' && ch != EOF);
+    fgets(str2, sizeof(str2), stdin);
+
+    printf("\nUsing scanf: %s\n", str1);
+    printf("Using fgets: %s", str2);
+    printf("For fgets length including newline: %lu\n", strlen(str2));
+
+    return 0;
+}

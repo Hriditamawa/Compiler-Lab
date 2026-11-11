@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+int main()
+{
+    char ch, token[100];
+    int i, count = 0, j;
+
+    char keywords[32][10] = {
+        "int", "float", "char", "double", "void",
+        "if", "else", "for", "while", "do",
+        "return", "break", "continue", "switch",
+        "case", "default", "long", "short",
+        "struct", "const", "unsigned", "signed",
+        "sizeof", "static", "main"
+    };
+
+    while ((ch = getchar()) != EOF)
+    {
+    if (isspace(ch))
+    continue;
+
+            
+        
+    if (isalpha(ch)  ch == '_')
+    {
+    i = 0;
+    token[i++] = ch;
+
+    while ((ch = getchar()) != EOF && (isalnum(ch)  ch == '_'))
+         {token[i++] = ch;}
+         token[i] = '\0';
+
+    if (ch != EOF)
+        ungetc(ch, stdin);
+        int found = 0;
+
+    for (j = 0; j < 25; j++)
+        {
+        if (strcmp(token, keywords[j]) == 0)
+        { found = 1;
+         break;}
+            }
+
+    if (found)
+        printf("Keyword: %s\n", token);
+        else
+        printf("Identifier: %s\n", token);
+
+        count++;
+        }
+
+        
+        
+   
+    else if (isdigit(ch))
+        {
+            i = 0;
+            token[i++] = ch;
+
+    while ((ch = getchar()) != EOF &&
+                   isdigit(ch))
+        {token[i++] = ch;}
+
+        token[i] = '\0';
+
+    if (ch != EOF)
+        ungetc(ch, stdin);
+        printf("Number: %s\n", token);
+        count++;
+        }
+
+        else if (ch == '"')
+        {
+            i = 0;
+            token[i++] = '"';
+
+            while ((ch = getchar()) != EOF && ch != '"')
+            {
+                token[i++] = ch;
+            }
+
+            token[i++] = '"';
+            token[i] = '\0';
+
+            printf("Literal: %s\n", token);
+            count++;
+        }
+
+   
+   
+        else if (strchr("+-*/%=<>!&|^", ch) != NULL)
+        {
+            token[0] = ch;
+            token[1] = '\0';
+
+            char next = getchar();
+
+            if (next == '=' 
+                (next == ch && (ch == '+'  ch == '-' 
+                 ch == '&'  ch == '|')))
+            {
+                token[1] = next;
+                token[2] = '\0';
+            }
+            else if (next != EOF)
+            {
+                ungetc(next, stdin);
+            }
+
+            printf("Operator: %s\n", token);
+            count++;
+        }
+ 
+ 
+        
+        else if (strchr("(){}[];,.", ch) != NULL)
+        {
+            printf("Symbol: %c\n", ch);
+            count++;
+        }
+
+        else
+        {
+            printf("Error: Invalid character %c\n", ch);
+        }
+    }
+
+    printf("\nTotal number of tokens = %d\n", count);
+
+    return 0;
+}

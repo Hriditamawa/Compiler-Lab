@@ -1,0 +1,178 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char lhs[10][10], rhs[10][100];
+char first[10][50][10];
+int count[10], n;
+
+int find(char symbol[])
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (strcmp(lhs[i], symbol) == 0)
+            return i;
+    }
+    return -1;
+}
+
+int addFirst(int p, char token[])
+{
+    for (int i = 0; i < count[p]; i++)
+    {
+        if (strcmp(first[p][i], token) == 0)
+            return 0;
+    }
+
+    strcpy(first[p][count[p]++], token);
+    return 1;
+}
+
+void calculateFirst()
+{
+    int change = 1;
+
+    while (change)
+    {
+    change = 0;
+
+    for (int p = 0; p < n; p++)
+    {
+    int start = 0;
+    int len = strlen(rhs[p]);
+
+    while (start < len)
+    {
+    int end = start;
+
+    while (end < len && rhs[p][end] != '/')
+        end++;
+    int pos = start;
+    int nullable = 1;
+
+    while (pos < end)
+    {
+    char token[10];
+    int j = 0;
+
+    if (rhs[p][pos] == '#'){
+        token[j++] = '#';
+        pos++;
+            }
+    else if (isupper(rhs[p][pos])){
+        token[j++] = rhs[p][pos++];
+
+    if (pos < end && rhs[p][pos] == '\'')
+        token[j++] = rhs[p][pos++];
+        }
+    else if (rhs[p][pos] == 'i' &&
+        pos + 1 < end &&
+        rhs[p][pos + 1] == 'd')
+        {
+            token[j++] = 'i';
+            token[j++] = 'd';
+            pos += 2;
+        }
+    else
+        {token[j++] = rhs[p][pos++];}
+
+        token[j] = '\0';
+
+    if (strcmp(token, "#") == 0)
+        {
+    if (addFirst(p, "#"))
+        change = 1;
+        break;
+        }
+
+        int q = find(token);
+
+        if (q == -1)
+        {
+            if (addFirst(p, token))
+            change = 1;
+            nullable = 0;
+            break;
+        }
+
+    int epsilon = 0;
+    for (int k = 0; k < count[q]; k++)
+    {
+     if (strcmp(first[q][k], "#") == 0)
+        epsilon = 1;
+        else
+    {
+    if (addFirst(p, first[q][k]))
+    change = 1;
+    }
+     }
+    if (!epsilon)
+    {
+        nullable = 0;
+        break;
+    }
+    }
+
+    if (nullable)
+    {
+     if (addFirst(p, "#"))
+        change = 1;
+    }
+
+    start = end + 1;
+    }
+     }
+       }
+}
+
+int main()
+{
+    char input[100];
+
+    printf("Enter number of productions: ");
+    scanf("%d", &n);
+
+    printf("Enter productions:\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        scanf("%s", input);
+
+        int j = 0;
+
+        while (input[j] != '=')
+            j++;
+
+        strncpy(lhs[i], input, j);
+        lhs[i][j] = '\0';
+
+        strcpy(rhs[i], input + j + 1);
+    }
+
+    calculateFirst();
+
+    printf("\nFirst Sets of All Non-terminals:\n");
+
+    for (int p = 0; p < n; p++)
+    {
+        printf("FIRST(%s) = { ", lhs[p]);
+
+        for (int i = 0; i < count[p]; i++)
+            printf("%s ", first[p][i]);
+
+        printf("}\n");
+    }
+
+    printf("\nTokenized Output Style:\n");
+
+    for (int p = 0; p < n; p++)
+    {
+        printf("\nFIRST(%s):\n", lhs[p]);
+for (int i = 0; i < count[p]; i++)
+            printf("Terminal: %s\n", first[p][i]);
+
+        printf("Total number of tokens = %d\n", count[p]);
+    }
+
+    return 0;
+}
