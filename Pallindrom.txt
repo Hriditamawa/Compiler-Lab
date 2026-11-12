@@ -1,34 +1,27 @@
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
 int main() {
-char str[100];
-int i, count = 0;
+    char word[100];
+    int i, length, palindrome = 1;
 
-printf("Enter a string: ");
-fgets(str, sizeof(str), stdin);
+    printf("Enter a word: ");
+    scanf("%s", word);
 
-printf("\nPosition of spaces: ");
+    length = strlen(word);
 
-for (i = 0; str[i] != '\0'; i++) {
-    if (str[i] == ' ') {
-    printf("%d ", i);
-    count++;
+    for (i = 0; i < length / 2; i++) {
+        if (tolower(word[i]) != tolower(word[length - 1 - i])) {
+            palindrome = 0;
+            break;
         }
     }
 
-printf("\nNumber of spaces = %d\n", count);
+    if (palindrome)
+        printf("Palindrome\n");
+    else
+        printf("Not Palindrome\n");
 
-for (i = 0; str[i] != '\0'; i++) {
-    if (str[i] == ' ') {
-    int j;
-
-for (j = i; str[j] != '\0'; j++) {
-    str[j] = str[j + 1];
-            }
-    i--;
-    }
-    }
-
-    printf("String after removing spaces: %s", str);
     return 0;
 }
